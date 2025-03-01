@@ -83,7 +83,7 @@ const CreateQuiz = () => {
                             value={title} 
                             onChange={(e) => setTitle(e.target.value)} 
                             placeholder="Quiz Title" 
-                            className="input border p-4 w-full" 
+                            className="input border p-4 w-full text-gray-600" 
                             required 
                         />
                         <textarea 

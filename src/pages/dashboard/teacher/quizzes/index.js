@@ -8,6 +8,7 @@ const TeacherQuizzes = () => {
     const [quizzes, setQuizzes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [deleting, setDeleting] = useState(null); // Track quiz being deleted
 
     useEffect(() => {
         const fetchQuizzes = async () => {
@@ -35,6 +36,32 @@ const TeacherQuizzes = () => {
         fetchQuizzes();
     }, []);
 
+    const handleDelete = async (quizId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this quiz?");
+        if (!confirmDelete) return;
+
+        setDeleting(quizId);
+        const token = localStorage.getItem("token");
+
+        try {
+            const res = await fetch(`/api/quiz/delete?quizId=${quizId}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                alert(data.error || "Failed to delete quiz.");
+            } else {
+                setQuizzes(quizzes.filter((quiz) => quiz._id !== quizId));
+            }
+        } catch (err) {
+            alert("Something went wrong. Please try again.");
+        } finally {
+            setDeleting(null);
+        }
+    };
+
     return (
         <div className="flex">
             <Sidebar />
@@ -56,12 +83,21 @@ const TeacherQuizzes = () => {
                                 <p className="text-sm text-gray-500 mt-2">Quiz Code: <span className="font-bold text-blue-600">{quiz.quizCode}</span></p>
                                 <p className="text-xs text-gray-400 mt-1">Created on: {new Date(quiz.createdAt).toLocaleDateString()}</p>
 
-                                {/* Edit Button Navigating with `quizId` */}
+                                {/* Edit Button */}
                                 <button 
                                     onClick={() => router.push(`/dashboard/teacher/edit-quiz?quizId=${quiz._id}`)}
-                                    className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-md"
+                                    className="absolute top-2 right-14 bg-yellow-500 text-white px-2 py-1 rounded-md mr-4"
                                 >
                                     Edit
+                                </button>
+
+                                {/* Delete Button */}
+                                <button 
+                                    onClick={() => handleDelete(quiz._id)}
+                                    className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md"
+                                    disabled={deleting === quiz._id}
+                                >
+                                    {deleting === quiz._id ? "Deleting..." : "Delete"}
                                 </button>
                             </div>
                         ))}

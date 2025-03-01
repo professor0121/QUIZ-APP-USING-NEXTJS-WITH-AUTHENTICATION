@@ -1,5 +1,5 @@
-import { connectDB } from "../../../lib/mongodb";
-import Quiz from "../../../models/Quiz";
+import { connectDB } from "../../../../lib/mongodb";
+import Quiz from "../../../../models/Quiz";
 import jwt from "jsonwebtoken";
 
 export default async function handler(req, res) {
