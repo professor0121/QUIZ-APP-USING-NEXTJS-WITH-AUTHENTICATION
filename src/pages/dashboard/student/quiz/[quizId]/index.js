@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import withAuth from "../../../../../utils/protectedRoute";
 import Sidebar from "../../../../../components/student/sidebar";
+import mongoose from "mongoose";
 
 const AttemptQuiz = () => {
     const router = useRouter();
@@ -56,7 +57,6 @@ const AttemptQuiz = () => {
     const handleSubmit = async () => {
         setSubmitting(true);
         const token = localStorage.getItem("token");
-
         try {
             const res = await fetch("/api/quiz/submit-quiz", {
                 method: "POST",
@@ -65,6 +65,7 @@ const AttemptQuiz = () => {
                     Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({ quizId, answers })
+                
             });
 
             const data = await res.json();
@@ -93,23 +94,25 @@ const AttemptQuiz = () => {
                     <p className="text-red-500 mt-4">{error}</p>
                 ) : (
                     <>
-                        <h3 className="text-xl font-semibold mt-4">{quiz.title}</h3>
+                        <h3 className="text-xl font-semibold mt-4 text-gray-700">{quiz.title}</h3>
                         <p className="text-gray-600">{quiz.description}</p>
 
                         <div className="mt-6 space-y-6">
                             {quiz.questions.map((q, index) => (
                                 <div key={q._id} className="border p-4 rounded-lg bg-gray-100">
-                                    <h4 className="text-lg font-semibold">{index + 1}. {q.questionText}</h4>
+                                    <h4 className="text-lg font-semibold text-gray-600">{index + 1}. {q.questionText}</h4>
                                     {q.options.map((opt, i) => (
                                         <label key={i} className="block mt-2">
                                             <input
                                                 type="radio"
-                                                name={q._id}
+                                                name={`question-${q._id}`}  // ✅ Ensure unique name per question
                                                 value={opt}
                                                 checked={answers[q._id] === opt}
+                                                
                                                 onChange={() => handleAnswerChange(q._id, opt)}
                                             />
-                                            <span className="ml-2">{opt}</span>
+
+                                            <span className="ml-2 text-gray-400">{opt}</span>
                                         </label>
                                     ))}
                                 </div>

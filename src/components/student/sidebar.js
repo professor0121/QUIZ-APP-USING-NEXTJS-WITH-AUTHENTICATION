@@ -44,7 +44,7 @@ const Sidebar = () => {
             {/* Profile Section */}
             <div className="flex flex-col items-center justify-center py-6 border-b border-blue-700">
                 <img
-                    src={student?.image || "/default-avatar.png"}
+                    src={student?.image || "/user.jpeg"}
                     alt="Profile"
                     className="w-16 h-16 rounded-full border-2 border-white"
                 />

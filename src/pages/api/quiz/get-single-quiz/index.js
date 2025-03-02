@@ -2,7 +2,7 @@ import { connectDB } from "../../../../lib/mongodb";
 import Quiz from "../../../../models/Quiz";
 import StudentQuiz from "../../../../models/StudentQuiz"; 
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose"; // Import mongoose to convert quizId to ObjectId
+import mongoose from "mongoose";
 
 export default async function handler(req, res) {
     if (req.method !== "GET") {
@@ -12,34 +12,48 @@ export default async function handler(req, res) {
     try {
         await connectDB();
         const token = req.headers.authorization?.split(" ")[1];
- console.log('token',token)
+
+        console.log('Token:', token); // Debugging
+
         if (!token) {
             return res.status(401).json({ error: "Unauthorized: No token provided" });
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const { quizId } = req.query;
-        console.log('quizId',quizId)
+
+        console.log('Quiz ID from Request:', quizId); // Debugging
 
         if (!quizId) {
             return res.status(400).json({ error: "Quiz ID is required" });
         }
 
+        // Convert IDs to ObjectId
+        const quizObjectId = new mongoose.Types.ObjectId(quizId);
+        console.log('Quiz Object ID:', quizObjectId); // Debugging
+        const studentObjectId = new mongoose.Types.ObjectId(decoded.id);
+
         let quiz;
-        const quizObjectId = new mongoose.Types.ObjectId(quizId); // Convert to ObjectId for MongoDB search
 
         if (decoded.role === "teacher") {
             // Teachers can only access quizzes they created
             quiz = await Quiz.findOne({ _id: quizObjectId, teacherId: decoded.id });
+            
         } else if (decoded.role === "student") {
-            // Check if the student has joined this quiz
-            const studentQuiz = await StudentQuiz.findOne({ quizId: quizObjectId, studentId: decoded.id });
+            // Ensure student is enrolled in this quiz
+            const studentQuiz = await StudentQuiz.findOne({ 
+                quizId: quizObjectId, 
+                studentId: studentObjectId 
+            });
+
+            console.log('Student Quiz Entry:', studentQuiz); // Debugging
+
             if (!studentQuiz) {
                 return res.status(403).json({ error: "You are not enrolled in this quiz" });
             }
 
             // Fetch the quiz details
-            quiz = await Quiz.findById(quizObjectId);
+            quiz = await Quiz.findById(studentQuiz.quizId);
         }
 
         if (!quiz) {

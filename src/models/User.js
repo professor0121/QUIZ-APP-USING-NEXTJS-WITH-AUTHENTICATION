@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema({
     },
     image: {
         type: String, // Store URL of the uploaded profile picture
-        default: "/default-avatar.png" // Default image if none is provided
+        default: "user.jpeg" // Default image if none is provided
     }
 }, { timestamps: true });
 
