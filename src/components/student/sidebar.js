@@ -55,7 +55,19 @@ const Sidebar = () => {
             {/* Navigation */}
             <nav className="flex-1 px-4 py-6">
                 <ul className="space-y-4">
-                    <li className="sidebar-link" onClick={() => router.push("/dashboard/student")}>
+                    <li className="sidebar-link cursor-pointer" onClick={() => router.push("/dashboard/student/home")}>
+                        Home
+                    </li>
+                    <li className="sidebar-link cursor-pointer" onClick={() => router.push("/dashboard/student")}>
+                        Profile
+                    </li>
+                    <li className="sidebar-link cursor-pointer" onClick={() => router.push("/dashboard/student/updateStudent")}>
+                        Update Profile
+                    </li>
+                    <li className="sidebar-link cursor-pointer" onClick={() => router.push("/dashboard/student")}>
+                        Quiz
+                    </li>
+                    <li className="sidebar-link cursor-pointer" onClick={() => router.push("/dashboard/student")}>
                         Dashboard
                     </li>
                 </ul>

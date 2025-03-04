@@ -31,7 +31,25 @@ const UserSchema = new mongoose.Schema({
     image: {
         type: String, // Store URL of the uploaded profile picture
         default: "user.jpeg" // Default image if none is provided
+    },
+    class: {
+        type:String,
+        default: "N/A",   
+    },
+    enrollmentNumber: {
+        type: String,
+        default: "N/A",
+    },
+    branch: {
+        type: String,
+        enum: ['CSE', 'IT', 'ECE', 'EE', 'ME', 'CE', 'AE', 'BT', 'CH', 'MT', 'PE', 'PI', 'TT'],
+        default: "N/A"
+    },
+    bio:{
+        type: String,
+        default: "N/A"
     }
+
 }, { timestamps: true });
 
 /**
