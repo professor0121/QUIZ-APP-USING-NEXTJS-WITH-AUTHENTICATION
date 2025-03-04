@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import withAuth from "../../../../../utils/protectedRoute";
 import Sidebar from "@/components/student/sidebar";
 const StudentProfile = () => {
   const [user, setUser] = useState({
@@ -170,4 +171,4 @@ const StudentProfile = () => {
   );
 };
 
-export default StudentProfile;
+export default withAuth(StudentProfile, "student");
